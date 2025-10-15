@@ -1,0 +1,170 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+
+
+section {
+    padding: 30px;
+    width: 100%;
+ 
+    margin-top: 60px;
+}
+
+.form-wraper {
+    border-radius: 1px;
+    background-color: white;
+    padding-bottom: 20px;
+    margin-left: auto;
+    margin-right: auto;
+
+    justify-content: center;
+    width: 100%;
+    box-shadow: 10px 10px 10px 5px rgba(0, 0, 0, 0.1); 
+
+
+
+}
+
+.form-wraper form {
+    margin: 20px;
+
+
+
+}
+
+
+label {
+    padding: 14px 12px 0px 0;
+    display: inline-block;
+
+
+
+
+
+}
+
+input[type=file] {
+
+    cursor: pointer;
+}
+
+input[type=text],
+input[type=file],
+input[type=date],
+select,
+textarea {
+    width: 100%;
+    padding: 14px 12px 0px 12px;
+    border: 1px solid #ccc;
+
+    resize: vertical;
+    border: none;
+    border-bottom: 1px solid #ccc;
+    outline: none;
+    background: none;
+
+
+}
+
+
+
+input[type='text']:focus {
+
+    outline: none;
+    border-color: red;
+
+}
+
+input[type=submit] {
+    background-color: #04AA6D;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    float: right;
+    width: 200px;
+
+}
+
+input[type=submit]:hover {
+    background-color: #078053;
+
+}
+
+.col-25 {
+    float: left;
+    width: 15%;
+    margin-top: 8px;
+}
+
+/* Floating column for inputs: 75% width */
+.col-75 {
+    float: left;
+    width: 80%;
+    margin-top: 8px;
+
+}
+
+/* Clear floats after the columns */
+.row::after {
+    content: "";
+    display: block;
+    clear: both;
+}
+
+@media screen and (max-width: 600px) {
+
+    .col-25,
+    .col-75,
+    input[type=submit] {
+        width: 100%;
+        margin-top: 0;
+    }
+}
+
+.btn-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 14px;
+    width: 100%;
+
+
+
+}
+
+.header {
+
+    background-color: rgb(59, 58, 58);
+    color: white;
+    text-align: center;
+    border-top-left-radius: 1px;
+    border-top-right-radius: 1px;
+    padding: 5px 5px;
+    box-sizing: border-box;
+}
+
+.adres-container1 {
+    display: flex;
+    justify-content: space-between;
+
+
+}
+
+.adres-container2 {
+    display: flex;
+    justify-content: space-between;
+
+
+}
+
+.adres {
+    float: left;
+    width: 50%;
+    margin-top: 8px;
+    margin-left: 30px;
+
+}

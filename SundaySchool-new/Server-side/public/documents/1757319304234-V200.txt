@@ -1,0 +1,238 @@
+
+
+1. Basic Huawei access switch conf
+==================================
+1.1. Change Host name
+    system-view
+    sysname CBE-Branch01-AS01
+    #
+1.2. Create Vlan
+    vlan bach 2 20 25
+    vlan 2
+    name MNGMT // description MNGMT
+    quit
+    #
+    vlan 20
+    name Data
+    quit
+    #
+    vlan 25
+    name ATM
+    quit
+    #
+1.3. configure Management interface (vlan 2)
+    interface vlanif 2
+    ip address #IP #MAC
+    quit
+    #
+1.4 configure static route
+    ip route-static 0.0.0.0 0.0.0.0 #GATE-WAY
+#
+2. Configure Dot1x Auth profile
+================================
+dot1x-access-profile name CBE
+dot1x-access-profile name dot1x_access_profile
+#
+mac-access-profile name CBE
+mac-access-profile name mac_access_profile
+#
+dns resolve
+#
+stp mode vbst
+#
+domain cbe.com.et
+#
+authentication-profile name CBE
+ dot1x-access-profile CBE
+ mac-access-profile CBE
+ access-domain cbe.com.et force
+ authentication dot1x-mac-bypass
+ link-down offline delay 0
+authentication-profile name default_authen_profile
+authentication-profile name dot1x_authen_profile
+authentication-profile name dot1xmac_authen_profile
+authentication-profile name mac_authen_profile
+authentication-profile name multi_authen_profile
+authentication-profile name portal_authen_profile
+#  
+telnet server enable
+telnet server-source all-interface
+Y
+#
+radius-server authorization calling-station-id decode-mac-format ascii hyphen-split common
+#
+undo dot1x quiet-period
+dot1x timer quiet-period 5
+#
+http server-source all-interface
+Y
+# 
+radius-server template default
+radius-server template webcreate_radius_ise
+ radius-server shared-key cipher ciscoIseCbe
+ radius-server authentication 10.1.10.11 1812 weight 100
+ radius-server authentication 10.1.10.12 1812 weight 80
+ radius-server accounting 10.1.10.11 1813 weight 100
+ radius-server accounting 10.1.10.12 1813 weight 80
+ radius-server retransmit 2
+ radius-server dead-time 1
+ undo radius-server user-name domain-included
+ radius-server nas-port-id-format vendor 9
+ radius-server detect-server up-server interval 2
+ calling-station-id mac-format hyphen-split mode2
+ radius-server attribute translate
+ radius-attribute translate extend vendor-specific 9 1 HW-Portal-URL access-accept account-response
+ radius-server algorithm master-backup
+ radius-attribute set Service-Type 10 auth-type mac
+ quit
+ #
+radius-server authorization 10.1.10.11 shared-key cipher ciscoIseCbe
+Y
+radius-server authorization 10.1.10.12 shared-key cipher ciscoIseCbe
+Y
+radius-server authorization server-source all-interface
+Y
+#
+hwtacacs-server template CBE
+ hwtacacs-server authentication 10.1.10.11
+ hwtacacs-server authentication 10.1.10.12 secondary
+ hwtacacs-server authorization 10.1.10.11
+ hwtacacs-server authorization 10.1.10.12 secondary
+ hwtacacs-server accounting 10.1.10.11
+ hwtacacs-server accounting 10.1.10.12 secondary
+ hwtacacs-server source-ip source-vlanif 2 
+ hwtacacs-server shared-key cipher cbeCiscoIse
+ Y
+# 
+acl name ACL-DEFAULT 3001
+ rule 5 permit udp source-port eq bootpc destination-port eq bootps
+ rule 10 permit udp destination-port eq dns
+ rule 15 permit icmp
+ rule 20 permit tcp destination 10.1.10.11 0 destination-port eq www
+ rule 25 permit tcp destination 10.1.10.11 0 destination-port eq 443
+ rule 30 permit tcp destination 10.1.10.11 0 destination-port eq 8443
+ rule 35 permit tcp destination 10.1.10.12 0 destination-port eq www
+ rule 40 permit tcp destination 10.1.10.12 0 destination-port eq 443
+ rule 45 permit tcp destination 10.1.10.12 0 destination-port eq 8443
+ quit
+ #
+acl name ACL-WEBAUTH-REDIRECT 3002
+ rule 5 deny udp source-port eq bootpc destination-port eq bootps
+ rule 7 deny tcp destination 10.2.0.0 0.0.0.255
+ rule 8 deny ip destination 10.3.11.13 0
+ rule 9 deny ip destination 10.3.11.16 0
+ rule 10 deny ip destination 10.1.13.9 0
+ rule 11 deny ip destination 10.1.13.247 0
+ rule 12 deny ip destination 10.1.13.8 0
+ rule 13 deny ip destination 10.1.64.37 0
+ rule 15 deny tcp destination 10.1.10.12 0
+ rule 20 deny tcp destination 10.1.10.11 0
+ rule 21 deny tcp destination 10.1.13.7 0
+ rule 22 deny ip destination 10.1.11.13 0
+ rule 23 deny ip destination 10.1.11.16 0
+ rule 25 permit tcp destination-port eq www
+ rule 30 permit tcp destination-port eq 443
+ rule 35 permit ip
+ quit
+#
+free-rule-template name default_free_rule
+#
+portal-access-profile name portal_access_profile
+# 
+aaa
+ authentication-scheme CBE
+  authentication-mode radius
+ authentication-scheme default
+  authentication-mode local
+ authentication-scheme hwtacacs-cbe
+  authentication-mode hwtacacs local
+ authentication-scheme radius
+  authentication-mode radius
+ authentication-scheme webcreate_ise_1837
+  authentication-mode radius
+ authentication-scheme webcreate_ise_4401
+  authentication-mode radius
+ authentication-scheme webcreate_ise_7966
+  authentication-mode radius
+ authentication-scheme webcreate_ise_8118
+  authentication-mode radius
+ authorization-scheme CBE
+  authorization-mode local
+ authorization-scheme default
+  authorization-mode local
+ authorization-scheme hwtacacs-cbe
+  authorization-mode hwtacacs local
+  authorization-cmd 15 hwtacacs local
+ accounting-scheme CBE
+  accounting-mode radius
+ accounting-scheme default
+  accounting-mode none
+ accounting-scheme hwtacacs-cbe
+  accounting-mode hwtacacs
+  accounting start-fail online
+ accounting-scheme webcreate_ise_1837
+  accounting-mode radius
+ accounting-scheme webcreate_ise_4401
+  accounting-mode radius
+ accounting-scheme webcreate_ise_7966
+  accounting-mode radius
+ accounting-scheme webcreate_ise_8118
+  accounting-mode radius
+ recording-scheme hwtacacs-cbe
+  recording-mode hwtacacs CBE
+ cmd recording-scheme hwtacacs-cbe
+ local-aaa-user password policy administrator
+  password history record number 0
+  password expire 0
+ domain cbe
+  authentication-scheme webcreate_ise_7966
+  accounting-scheme webcreate_ise_7966
+  radius-server webcreate_radius_ise
+ domain cbe.com.et
+  authentication-scheme webcreate_ise_7966
+  accounting-scheme webcreate_ise_7966
+  radius-server webcreate_radius_ise
+ domain default
+  authentication-scheme radius
+  accounting-scheme default
+  radius-server default
+ domain default_admin
+  authentication-scheme hwtacacs-cbe
+  accounting-scheme hwtacacs-cbe
+  authorization-scheme hwtacacs-cbe
+  hwtacacs-server CBE
+ local-user CBEAdmin password irreversible-cipher CBEBR@NETAdmin1  
+local-user CBEAdmin privilege level 15
+local-user CBEAdmin service-type ssh ftp
+quit
+ #
+6. Configure access/trunk interfaces and  Bind the authentication profile 
+===========================================================================
+6.1 configure access port
+    interface range GE1/0/1 to GE1/0/22
+    port link-type access
+    port access vlan 20
+    authentication-profile CBE
+    quit
+     #
+6.2 configure trunk port
+    interface range GE1/0/23 to GE1/0/24
+    port link-type trunk
+    port trunk allow-pass vlan 2 20 25
+    quit
+    #
+
+7. Enable SSH
+    stelnet server enable
+    ssh user CBEAdmin
+    ssh user CBEAdmin authentication-type all
+    ssh user CBEAdmin service-type all
+    ssh server-source all-interface
+    ssh server authentication-retries 5
+    #
+    user-interface vty 0 4  
+    authentication-mode aaa   
+    idle-timeout 20 0  
+    user privilege level 15/3
+    quit
+    #

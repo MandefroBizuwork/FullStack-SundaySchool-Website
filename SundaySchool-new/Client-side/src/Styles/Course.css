@@ -1,0 +1,9 @@
+
+.categoryCard .card:hover{
+background-color: aquamarine;
+}
+.coursecard:hover {
+  transform: translateY(-10px);
+  transition: all 0.3s ease-in-out;
+  background-color: #71b1a9;
+}

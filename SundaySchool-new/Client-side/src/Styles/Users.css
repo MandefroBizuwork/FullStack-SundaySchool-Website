@@ -1,0 +1,7 @@
+
+/* Make sure this CSS file is imported after Bootstrap's CSS */
+.custom-thead th {
+  background-color: #92ada0 !important;
+ 
+  border-color: rgba(0,0,0,0.08); /* optional: adjust header border */
+}

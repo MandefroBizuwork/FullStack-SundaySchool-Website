@@ -1,0 +1,49 @@
+/* Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Rubik&display=swap');
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+html {
+    scroll-behavior: smooth;
+}
+body{
+    background-color: #F4F7FF !important;
+}
+
+/* Custom Scroll Bar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-track {
+    background-color: #FFFFFF;
+}
+::-webkit-scrollbar-thumb {
+    background-color: #1A8EFD;
+    border-radius: 4rem;
+}
+/* Make Quill's alignment classes stronger than Bootstrap's */
+.ql-align-center {
+  text-align: center !important;
+}
+
+.ql-align-right {
+  text-align: right !important;
+}
+
+.ql-align-justify {
+  text-align: justify !important;
+}
+
+/* Optional: bold styling */
+.ql-text-bold {
+  font-weight: bold !important;
+}
+.custom-quill {
+   /* initial height */
+  max-height: 800px; /* optional max height */
+  overflow-y: auto;
+}
