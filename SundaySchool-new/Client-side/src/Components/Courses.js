@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { FaBook, FaChurch, FaBible } from "react-icons/fa";
-import "../Styles/Course.css"
+import "../Styles/Course.css";
+
 function Courses() {
   const [error, setError] = useState("");
   const [categories, setCategories] = useState([]);
@@ -12,12 +12,10 @@ function Courses() {
         const api = "http://localhost:2000/course/categories";
         const response = await fetch(api);
 
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
+        if (!response.ok) throw new Error("Network response was not ok");
 
         const data = await response.json();
-        setCategories(data.category || []); // ensure it's an array
+        setCategories(data.category || []);
       } catch (e) {
         setError("ዳታው አልተገኘም!");
         console.error(e.message);
@@ -28,62 +26,58 @@ function Courses() {
   }, []);
 
   return (
-    <section
-      id="courses"
-      className="mt-10 bg-light shadow-sm"
-      style={{ padding: "100px 32px" }}
-    >
-      <div className="" style={{maxwidth: "2140px"}}>
-        <div className="text-center my-3 shadow py-2">
-          <h2 className="fw-bold text-primary">ትምህርቶች</h2>
-          <h3 className="text-muted mx-auto" style={{ maxWidth: "700px" }}>
+    <section id="courses" className="courses-section py-5 bg-light ">
+      <div className="container">
+        {/* Section Header */}
+        <div className="text-center mb-5">
+          <h2 className="fw-bold text-primary mb-2">ትምህርቶች</h2>
+          <p className="text-muted mx-auto" style={{ maxWidth: "700px" }}>
             በሰንበት ትምህርት ቤታችን ተማሪዎች ከመጽሐፍ ቅዱስ፣ ከቤተክርስቲያን ታሪክ፣
             ከመንፈሳዊ ትምህርቶች ጋር የተያያዘ እውቀት ይማራሉ።
-          </h3>
-           {/* <hr style={{backgroundColor:"gray",border:"1px solid", marginbottom:"10px"}}/> */}
+          </p>
+          <div className="underline mx-auto"></div>
         </div>
-       
 
         {/* Courses Grid */}
-        <div className="row g-4 py-5" >
-          {/* {error && <h2 className="text-danger text-center">{error}</h2>} */}
+        <div className="row g-4">
           {categories.length > 0 ? (
-  categories.map((cat) => {
-    // Dynamically choose icon
-    let iconClass;
-    if (cat.CATGORYNAME === "የመጽሐፍ ቅዱስ ጥናት") iconClass = "bi-journal-text";
-    else if (cat.CATGORYNAME === "የቤተክርስቲያን ታሪክ") iconClass = "bi-building";
-    else iconClass = "bi-book";
+            categories.map((cat) => {
+              let iconClass;
+              if (cat.CATGORYNAME === "የመጽሐፍ ቅዱስ ጥናት") iconClass = "bi-journal-text";
+              else if (cat.CATGORYNAME === "የቤተክርስቲያን ታሪክ") iconClass = "bi-building";
+              else iconClass = "bi-book";
 
-    return (
-  <div className="col-sm-6 col-lg-4">
-  <div className="coursecard shadow h-100 border-0 text-center p-4 d-flex flex-column align-items-center justify-content-between hover-shadow">
-    <Link
-      to={`/Courses/coursedetail/${cat.CATID}`}
-      className="text-decoration-none d-flex flex-column align-items-center justify-content-center flex-grow-1"
-    title="ሙሉውን ክፈት"
-    >
-      <div
-        className="d-flex justify-content-center align-items-center mb-3 rounded-circle bg-primary"
-        style={{ width: "70px", height: "70px" }}
-      >
-        <i className={`bi ${iconClass} text-white`} style={{ fontSize: "2rem" }}></i>
-      </div>
-      <h5 className="fw-bold text-dark">{cat.CATGORYNAME}</h5>
-    </Link>
+              return (
+                <div key={cat.CATID} className="col-xl-4 col-lg-4 col-md-6 col-sm-12">
+                  <div className="course-card shadow-sm p-4 rounded bg-white text-center h-100">
+                    <Link
+                      to={`/Courses/coursedetail/${cat.CATID}`}
+                      className="text-decoration-none d-flex flex-column align-items-center"
+                      title="ሙሉውን ክፈት"
+                    >
+                      <div
+                        className="icon-wrapper d-flex justify-content-center align-items-center mb-3"
+                      >
+                        <i className={`bi ${iconClass} text-white fs-2`}></i>
+                      </div>
+                      <h5 className="fw-bold text-dark mb-2">{cat.CATGORYNAME}</h5>
+                    </Link>
 
-    {/* Button inside card */}
-    <button className="btn btn-success mt-3 w-75">ሰነዱን አውርድ</button>
-  </div>
-</div>
-
-
-    );
-  })
-) : (
-  <h2 className="text-danger text-center">ዳታው አልተገኘም!</h2>
-)}
-
+                    <div className="mt-3">
+                      <Link
+                        to={`/Courses/coursedetail/${cat.CATID}`}
+                        className="btn btn-outline-primary btn-sm"
+                      >
+                        ዝርዝር ይመልከቱ <i className="bi bi-arrow-right-circle ms-1"></i>
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              );
+            })
+          ) : (
+            <h4 className="text-danger text-center">{error || "ዳታ የለም!"}</h4>
+          )}
         </div>
       </div>
     </section>

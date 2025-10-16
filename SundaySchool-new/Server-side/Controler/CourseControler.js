@@ -61,13 +61,13 @@ const postCourse = async (req, res) => {
       return res.status(StatusCodes.BAD_REQUEST).json({ error: "Missing required fields" });
     }
 
-    const sql = "INSERT INTO article (title, subtitle, description, CATID) VALUES (?, ?, ?, ?)";
+    const sql = "INSERT INTO courses (title, subtitle, description, CATID) VALUES (?, ?, ?, ?)";
     await dbcon.query(sql, [title, subtitle, description, category_id]);
 
-    return res.status(StatusCodes.OK).json({ msg: "Article posted successfully" });
+    return res.status(StatusCodes.OK).json({ msg: "courses posted successfully" });
   } catch (err) {
-    console.error("Error inserting article:", err.message);
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: "Failed to post article" });
+    console.error("Error inserting courses:", err.message);
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: "Failed to post courses" });
   }
 };
 

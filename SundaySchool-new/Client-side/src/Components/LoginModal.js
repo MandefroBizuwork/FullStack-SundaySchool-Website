@@ -105,7 +105,7 @@ setPassword("")
                    >
                      <div>
                        <label>
-                         Email<span style={{ color: "red" }}>*</span>:
+                         ኢሜል<span style={{ color: "red" }}>*</span>:
                        </label>
                        <input
                          className="form-control form-control-lg "
@@ -117,37 +117,38 @@ setPassword("")
                        {errors.email && <p style={{ color: "red" }}>{errors.email}</p>}
                      </div>
        
-                     <div style={{ position: "relative" }}>
-                       <label>
-                         Password<span style={{ color: "red" }}>*</span>:
-                       </label>
-                       <input
-                         className="form-control form-control-lg"
-                         type={showPassword ? "text" : "password"}
-                         name="password"
-                         value={password}
-                         onChange={(e) => setPassword(e.target.value)}
-                       />
-                       <button
-                         type="button"
-                         onClick={() => setVisibility(!showPassword)}
-                         style={{
-                           position: "absolute",
-                           right: "20px",
-                           top: "45px",
-                         
-                           background: "none",
-                           border: "none",
-                           cursor: "pointer",
-                         }}
-                       >
-                         {showPassword ? "Hide" : "Show"}
-                       </button>
-       
-                       {errors.password && (
-                         <p style={{ color: "red" }}>{errors.password}</p>
-                       )}
-                     </div>
+                   <div style={{ position: "relative" }}>
+                      <label>
+                        የይለፍ ቃል<span style={{ color: "red" }}>*</span>:
+                      </label>
+                      <input
+                        className="form-control form-control-lg"
+                        type={showPassword ? "text" : "password"}
+                        name="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                      />
+
+                      {/* 👁️ Toggle Button */}
+                      <button
+                        type="button"
+                        onClick={() => setVisibility(!showPassword)}
+                        style={{
+                          position: "absolute",
+                          right: "20px",
+                          top: "45px",
+                          background: "none",
+                          border: "none",
+                          cursor: "pointer",
+                          color: "#6c757d",
+                        }}
+                      >
+                        <i className={`bi ${showPassword ? "bi-eye-slash" : "bi-eye"}`} style={{ fontSize: "1.2rem" }}></i>
+                      </button>
+
+                      {errors.password && <p style={{ color: "red" }}>{errors.password}</p>}
+                    </div>
+
        
                      <div className="mt-4">
                        {loading?(<p>Loading...</p>)
@@ -157,7 +158,7 @@ setPassword("")
                          className="btn btn-success btn-lg  "
                          type="submit"
                        >
-                         Sign in
+                         ግባ
                        </button>)}
                      </div>
                      {/* <div className="mt-3">
@@ -175,7 +176,7 @@ setPassword("")
       </Modal.Body>
       <Modal.Footer>
         <Button className="btn btn-danger btn-lg" variant="secondary" onClick={onclose}>
-          Close
+          ዝጋ
         </Button>
       </Modal.Footer>
     </Modal>

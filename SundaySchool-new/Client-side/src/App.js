@@ -31,7 +31,9 @@ import PostArticle from "./Pages/Pages/PostCourse";
 import DocumentDetail from "./Components/DocumentDetail";
 import AddDocuments from "./Pages/Pages/AddDocuments";
 import PostContent from "./Pages/Pages/PostContent";
-import Users from "./Pages/Pages/Users";
+import UsersReport from "./Components/Reports/UsersReport";
+import CouresReport from "./Components/Reports/CouresReport";
+import PostCourse from "./Pages/Pages/PostCourse";
 export const AppState = createContext();
 function App() {
   const [user, setUser] = useState(null);
@@ -134,10 +136,15 @@ function App() {
           >
            
             <Route index element={<DashboardPage />} />
-            <Route path="postarticle" element={<PostArticle />} />
+            <Route path="PostCourse" element={<PostCourse />} />
+          
             <Route path="AddDocuments" element={<AddDocuments />} />
            <Route path="PostContent" element={<PostContent />} />
-           <Route path="users" element={<Users />} />
+           <Route path="usersReport" element={<UsersReport />} />
+          <Route path="Courses/CouresReport/:catid" element={<CouresReport />} />
+          
+           
+
             
            
             {/* <Route path="jobs" element={<Jobs />} />

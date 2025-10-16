@@ -1,68 +1,94 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
+import { Spinner } from "react-bootstrap";
+import "../Styles/CourseDetail.css"; // 👈 we'll add a new CSS file for styling
 
 export default function CourseDetail() {
   const { catid } = useParams();
-
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(true);
   const [courses, setCourses] = useState([]);
-  const [category, setcategory] = useState([]);
+  const [category, setCategory] = useState({});
 
   useEffect(() => {
     const fetchCourseDetail = async () => {
       try {
+        setLoading(true);
         const api = `http://localhost:2000/course/coursedetail/${catid}`;
         const response = await fetch(api);
 
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
+        if (!response.ok) throw new Error("Network response was not ok");
 
         const data = await response.json();
-        setCourses(data.courses || []); // adjust key based on your backend response
-        setcategory(data.category[0] || []);
-        
+        setCourses(data.courses || []);
+        setCategory(data.category?.[0] || {});
       } catch (e) {
-        setError(e.message);
+        setError("ዳታ ማግኘት አልተቻለም!");
         console.error(e.message);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchCourseDetail();
   }, [catid]);
-console.log(courses)
-console.log(category)
-  return (
-    <section className=" my-5" style={{ padding: "100px 32px" }}>
-   
-      <h2 className="text-center mb-4 fw-bold shadow py-4">
-        የክፍል ምድብ - <strong className="text-primary"><i>{category.CATGORYNAME}</i></strong>
-       
-      </h2>
-    
-       {/* <hr className="bg-danger" style={{lineHeight:"4px",border:"1px solid", backgroundColor:"orange"}}/>  */}
-     
 
-      {/* {error && <p className="text-danger text-center">{error}</p>} */}
- <div className="shadow bg-light px-5 " >
-      {courses.length > 0 ? (
-        <ul className="">
-          {courses.map((item) => (
-            <li key={item.id} className="list-group-item">
-             <h1 className="text-center text-decoration-underline">{item.Title}</h1>
-              <h1>{item.subtitle}</h1>
-               <div
-                className="formatted-content"
-                dangerouslySetInnerHTML={{ __html: item.description }}
-              >  
-              </div>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <h2 className="text-danger text-center py-5">በዚህ ምድብ  የተዘጋጀ ትምርት የለም!</h2>
-      )}
+  return (
+    <section className="course-detail-section container my-5 py-5">
+      <div className="text-center mb-5">
+        <h2 className="fw-bold section-title">
+          የክፍል ምድብ -{" "}
+          <strong className="text-primary">
+            <i>{category.CATGORYNAME || "..."}</i>
+          </strong>
+        </h2>
+        <div className="underline mx-auto"></div>
       </div>
+
+      {loading ? (
+        <div className="text-center my-5">
+          <Spinner animation="border" variant="primary" />
+          <p className="mt-3">ዳታ በመመጣት ላይ...</p>
+        </div>
+      ) : error ? (
+        <p className="text-danger text-center fw-bold">{error}</p>
+      ) : courses.length > 0 ? (
+        <div className="row g-4">
+          {courses.map((item) => (
+            <div key={item.id} className="col-lg-4 col-md-6 col-sm-12">
+              <div className="course-card shadow-sm p-4 rounded bg-white h-100">
+                <h3 className="course-title text-center text-decoration-underline mb-3">
+                  {item.Title}
+                </h3>
+                {item.subtitle && (
+                  <h5 className="text-muted text-center mb-3">
+                    {item.subtitle}
+                  </h5>
+                )}
+
+                <div className="course-description">
+                  {item.description
+                    ? item.description.replace(/<[^>]+>/g, "")
+                    : "መግለጫ የለም።"}
+                </div>
+
+                {/* <div className="mt-4 text-end">
+                  <Link
+                    to={`/course/${item.id}`}
+                    className="btn btn-outline-primary btn-sm"
+                  >
+                    ዝርዝር ይመልከቱ <i className="bi bi-arrow-right-circle ms-1"></i>
+                  </Link>
+                </div> */}
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <h4 className="text-center text-danger py-5">
+          በዚህ ምድብ የተዘጋጀ ትምህርት የለም!
+        </h4>
+      )}
     </section>
   );
 }

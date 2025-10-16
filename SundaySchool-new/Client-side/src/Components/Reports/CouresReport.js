@@ -1,64 +1,71 @@
+
+
+
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import SignUpModal from "../../Components/SignUpModal";
-import "../../Styles/Users.css";
-import UpdateUserForm from "./UpdateUserForm";
 
-const Users = () => {
+import { useParams, Link } from "react-router-dom";
+// import "../../Styles/Users.css";
+// import UpdateUserForm from "../../Pages/Pages/UpdateUserForm";
+
+
+const CouresReport = () => {
+      const { catid } = useParams();
   const [showSignupModal, setShowSignupModal] = useState(false);
-  const [selectedUser, setSelectedUser] = useState(null);
+  const [selectedCourses, setSelectedCourses] = useState(null);
 const [showUpdateModal, setShowUpdateModal] = useState(false);
+  const [category, setcategory] = useState([]);
 
-  const [users, setUserList] = useState([]);
+  const [Courses, setCoursesList] = useState([]);
 
   // ✅ Move fetch function outside useEffect so it can be reused
-  const fetchUsercount = async () => {
+  const fetchCourses= async () => {
     try {
-      const api = "http://localhost:2000/api/user/userReport";
-      const response = await fetch(api);
+      const api = `http://localhost:2000/course/coursedetail/${catid}`;
+        const response = await fetch(api);
       if (!response.ok) throw new Error("Network response was not ok");
 
-      const userdata = await response.json();
-      setUserList(userdata.latestuser || []);
+      const data = await response.json();
+      setCoursesList(data.courses || []); // adjust key based on your backend response
+     setcategory(data.category[0] || []);
     } catch (e) {
       console.log(e.message);
     }
   };
 
   useEffect(() => {
-    fetchUsercount();
-  }, []);
+    fetchCourses();
+  }, [catid]);
 
   // 🟢 Delete Handler
-  const handleDelete = async (username) => {
-    if (window.confirm("Are you sure you want to delete this user?")) {
-      try {
-        const response = await fetch(
-          `http://localhost:2000/api/user/deleteuser/${username}`,
-          { method: "DELETE" }
-        );
-        if (!response.ok) throw new Error("Failed to delete user");
-        alert("User deleted successfully!");
-        setUserList(users.filter((user) => user.username !== username));
-      } catch (err) {
-        console.error(err);
-        alert("Error deleting user");
-      }
-    }
-  };
+//   const handleDelete = async (username) => {
+//     if (window.confirm("Are you sure you want to delete this user?")) {
+//       try {
+//         const response = await fetch(
+//           `http://localhost:2000/api/user/deleteuser/${username}`,
+//           { method: "DELETE" }
+//         );
+//         if (!response.ok) throw new Error("Failed to delete user");
+//         alert("User deleted successfully!");
+//         setUserList(users.filter((user) => user.username !== username));
+//       } catch (err) {
+//         console.error(err);
+//         alert("Error deleting user");
+//       }
+//     }
+//   };
 
-  // 🟡 Update Handler
- const handleUpdate = (user) => {
-  setSelectedUser(user);
-  setShowUpdateModal(true);
-};
+//   // 🟡 Update Handler
+//  const handleUpdate = (user) => {
+//   setSelectedUser(user);
+//   setShowUpdateModal(true);
+// };
 
 
-  // ✅ Handle modal close and refresh user list
-  const handleCloseModal = () => {
-    setShowSignupModal(false);
-    fetchUsercount(); // Reload data after modal closes
-  };
+//   // ✅ Handle modal close and refresh user list
+//   const handleCloseModal = () => {
+//     setShowSignupModal(false);
+//     fetchUsercount(); // Reload data after modal closes
+//   };
 
   return (
     <div className="card-body shadow p-5">
@@ -74,19 +81,13 @@ const [showUpdateModal, setShowUpdateModal] = useState(false);
             />
           </div>
         </div>
-        <div className="shadow-sm my-2 py-3 float-right">
-          <Link
-            onClick={() => setShowSignupModal(true)}
-            className="navbar-links butns"
-          >
-            አባል አክል
-          </Link>
-        </div>
-        <SignUpModal
+        
+        {/* <SignUpModal
           showModal={showSignupModal}
           onclose={handleCloseModal} // ✅ use new close handler
-        />
-        <UpdateUserForm
+        /> */}
+      
+        {/* <UpdateUserForm
             show={showUpdateModal}
             onClose={() => setShowUpdateModal(false)}
             user={selectedUser}
@@ -95,7 +96,7 @@ const [showUpdateModal, setShowUpdateModal] = useState(false);
                 prev.map((u) => (u.username === updatedUser.username ? updatedUser : u))
                 );
             }}
-            />
+            /> */}
 
       </div>
 
@@ -122,33 +123,37 @@ const [showUpdateModal, setShowUpdateModal] = useState(false);
           >
             <tr>
               <th scope="col" style={{ width: "5%" }}>#</th>
-              <th scope="col">መለያ</th>
-              <th scope="col">ሙሉ ስም</th>
-              <th scope="col">ሮል</th>
-              <th scope="col" style={{ width: "15%" }}>ኢሜል</th>
+              <th scope="col">ርዕስ </th>
+              <th scope="col">መግለጫ</th>
+              <th scope="col">ምድብ</th>              
               <th scope="col" style={{ width: "18%" }}>አክሽን</th>
             </tr>
           </thead>
           <tbody>
-            {users.length > 0 ? (
-              users.map((item, index) => (
+            {Courses.length > 0 ? (
+              Courses.map((item, index) => (
                 <tr key={item.username}>
                   <td>{index + 1}</td>
-                  <td>{item.username}</td>
-                  <td>{item.FirstName} {item.LastName}</td>
-                  <td>{item.Role}</td>
-                  <td>{item.email}</td>
+                  <td>{item.Title}</td>
+                  <td> 
+                    <div className="formatted-content">
+                        {item.description.replace(/<[^>]+>/g, '')}
+                    </div>
+
+              </td>
+                  <td>{category.CATGORYNAME}</td>
+                
                   <td>
                     <div className="d-flex gap-2">
                       <Link
                         className="btn btn-sm btn-warning"
-                        onClick={() => handleUpdate(item)}
+                        // onClick={() => handleUpdate(item)}
                       >
                         Update
                       </Link>
                       <Link
                         className="btn btn-sm btn-danger"
-                        onClick={() => handleDelete(item.username)}
+                        // onClick={() => handleDelete(item.username)}
                       >
                         Delete
                       </Link>
@@ -159,7 +164,7 @@ const [showUpdateModal, setShowUpdateModal] = useState(false);
             ) : (
               <tr>
                 <td colSpan="6" className="text-center text-muted py-4">
-                  No users found
+                ምንም የተመዘገበ ትምህርት የለም
                 </td>
               </tr>
             )}
@@ -168,7 +173,7 @@ const [showUpdateModal, setShowUpdateModal] = useState(false);
 
         <div className="datatable-bottom d-flex justify-content-between align-items-center mt-2 p-2">
           <div className="datatable-info">
-            <strong>Showing {users.length} users</strong>
+            <strong>Showing {Courses.length} </strong>
           </div>
           <nav className="datatable-pagination">
             <ul className="datatable-pagination-list pagination pagination-sm mb-0"></ul>
@@ -179,4 +184,4 @@ const [showUpdateModal, setShowUpdateModal] = useState(false);
   );
 };
 
-export default Users;
+export default CouresReport;

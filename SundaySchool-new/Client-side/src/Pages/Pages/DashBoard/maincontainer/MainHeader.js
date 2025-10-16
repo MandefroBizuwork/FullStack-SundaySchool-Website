@@ -8,7 +8,7 @@ function MainHeader({pagetype}) {
     
       <nav>
         <ol className="breadcrumb">
-          <li style={{fontSize:'20px'}} className="breadcrumb-item mx-1"><Link to="/">Home</Link></li>
+          <li style={{fontSize:'20px'}} className="breadcrumb-item mx-1"><Link to="/">ወደ መነሻ ገጽ</Link></li>
           <li style={{fontSize:'20px'}}>/</li>
           <li style={{fontSize:'20px'}} className="breadcrumb-item active px-2">{pagetype}</li>
         </ol>

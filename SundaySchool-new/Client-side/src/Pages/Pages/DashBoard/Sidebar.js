@@ -1,139 +1,137 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { Link } from "react-router-dom";
-// import Profile from "../../../images/profile.jpg";
 import "./Header.css";
-// import $ from "jquery";
+
 function Sidebar({ sideBarOpen }) {
   const [isCollapsed, setIscollapsed] = useState(true);
+  const [categories, setCategories] = useState([]);
+  const [error, setError] = useState("");
   const collapseMenu1 = () => {
     setIscollapsed((prev) => !prev);
   };
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const api = "http://localhost:2000/course/categories";
+        const response = await fetch(api);
+
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+
+        const data = await response.json();
+        setCategories(data.category || []); // ensure it's an array
+      } catch (e) {
+        setError("ዳታው አልተገኘም!");
+        console.error(e.message);
+      }
+    };
+
+    fetchCategories();
+  }, []);
   return (
     <aside
       id="sidebar"
       className={`mysidebar ${sideBarOpen ? "showsidbar" : "hidesidbar"} `}
     >
-    <hr style={{backgroundColor:"black", height:"1.5px"}}/>
+      <hr style={{ backgroundColor: "black", height: "1.5px" }} />
+
       <ul className="sidebar-nav mb-auto" id="sidebar-nav">
+        {/* Dashboard */}
         <li className="nav-item">
-          <Link className="nav-link collapsed" to="/dashboard">
-            <i className="bi bi-grid"></i>
-            <span style={{letterSpacing:"2px"}}>ዳሽቦርድ</span>
+          <Link className="nav-link collapsed d-flex align-items-center" to="/dashboard">
+            <i className="bi bi-house-door-fill me-2"></i>
+            <span style={{ letterSpacing: "2px" }}>ዋና ገጽ</span>
           </Link>
         </li>
-        {/* <!-- End Dashboard Nav -->
 
-      <!-- End Components Nav --> */}
-
+        {/* Courses Dropdown */}
         <li className="nav-item">
           <a
             onClick={collapseMenu1}
-            style={{ position: "relative" }}
-            className="nav-link "
-            data-bs-target="#forms-nav"
-            data-bs-toggle="collapse"
-            href="#"
-            aria-expanded="false"
+            style={{ position: "relative", cursor: "pointer" }}
+            className="nav-link d-flex align-items-center"
           >
-            <i className="bi bi-journal-text"></i>
-            <span style={{letterSpacing:"2px"}}>የትምህርት ምድብ</span>
-            {/* <i className="bi bi-chevron-down ms-auto"></i> */}
-
-            <svg
-              style={{ float: "right", right: "0", position: "absolute" }}
-              className={`ms-auto ${
+            <i className="bi bi-journal-bookmark-fill me-2"></i>
+            <span style={{ letterSpacing: "2px" }}>ትምህርቶች</span>
+            <i
+              className={`bi ${
                 isCollapsed ? "bi-chevron-up" : "bi-chevron-down"
-              } `}
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              fill="currentColor"
-              viewBox="0 0 16 16"
-            >
-              <path
-                fill-rule="evenodd"
-                d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708"
-              />
-            </svg>
-
-            {/* <svg  
-               style={{ float: "right", right: "0", position: "absolute" }}
-                className="   ms-auto"
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                fill="currentColor"
-                className="bi bi-chevron-up"
-                viewBox="0 0 16 16"
-              >
-                <path
-                  fill-rule="evenodd"
-                  d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708z"
-                />
-              </svg> */}
+              } ms-auto`}
+              style={{ position: "absolute", right: "10px" }}
+            ></i>
           </a>
+
           <ul
             id="form-collapse"
             data-bs-parent="#sidebar-nav"
             className={`sidbarDropdown-container ${
               isCollapsed ? "" : "form-collapse"
-            }`}
-          >
-            <li>
-              <a href="forms-elements.html">
-                <i className="bi bi-circle"></i>
-                <span style={{letterSpacing:"2px"}}>የመጽሐፍ ቅዱስ ጥናት</span>
-              </a>
-            </li>
-            <hr style={{ backgroundColor: "#585757" }} />
-            <li>
-              <a href="forms-layouts.html">
-                <i className="bi bi-circle"></i>
-                <span style={{letterSpacing:"2px"}}>የቤተክርስቲያን ታሪክ</span>
-              </a>
-            </li>
-            <hr style={{ backgroundColor: "#585757" }} />
-           
-            <li>
-              <a href="forms-editors.html">
-                <i className="bi bi-circle"></i>
-                <span style={{letterSpacing:"2px"}}>የመዝሙር ትምህርት</span>
-              </a>
-            </li>
-            <hr style={{ backgroundColor: "#585757" }} />
+            }`}>
+                   {
+                      categories.length > 0 ? (
+                      categories.map((cat) => {
+                        // Dynamically choose icon
+                        let iconClass;
+                        if (cat.CATGORYNAME === "የመጽሐፍ ቅዱስ ጥናት") iconClass = "bi-journal-text";
+                        else if (cat.CATGORYNAME === "የቤተክርስቲያን ታሪክ") iconClass = "bi-building";
+                        else iconClass = "bi-book";
+
+                        return (
+                          <> 
+                
+                          <li>
+                            <Link  to={`Courses/CouresReport/${cat.CATID}`} className="d-flex align-items-center">
+                              <i className="bi bi-book-half me-2"></i>
+                              <span style={{ letterSpacing: "2px" }}>{cat.CATGORYNAME}</span>
+                            </Link>
+                           </li>
+                            <hr style={{ backgroundColor: "#585757" }} />
+                            </>
+                            
+                        
+                        );
+                      })
+                    ) : (
+                      <h2 className="text-danger text-center">ዳታው አልተገኘም!</h2>
+                    )}
+                              
+          
+          
           </ul>
         </li>
-      
+
+        {/* Add New Course */}
         <li className="nav-item">
-          <Link className="nav-link collapsed" to="/dashboard/postarticle">
-            <i className="bi bi-grid"></i>
-            <span style={{letterSpacing:"2px"}}>አዲስ ትምህርት ልቀቅ</span>
-          </Link>
-        </li>
-         <li className="nav-item">
-          <Link className="nav-link collapsed" to="/dashboard/PostContent">
-            <i className="bi bi-grid"></i>
-            <span style={{letterSpacing:"2px"}}>አዲስ ይዘት</span>
-          </Link>
-        </li>
-        <li className="nav-item">
-          <Link className="nav-link collapsed" to="/dashboard/AddDocuments">
-            <i className="bi bi-grid"></i>
-            <span style={{letterSpacing:"2px"}}>ሰነዶች</span>
-          </Link>
-        </li>
-        <li className="nav-item">
-          <Link className="nav-link collapsed" to="/dashboard/users">
-            <i className="bi bi-grid"></i>
-            <span style={{letterSpacing:"2px"}}>አባላት</span>
+          <Link className="nav-link collapsed d-flex align-items-center" to="/dashboard/PostCourse">
+            <i className="bi bi-pencil-square me-2"></i>
+            <span style={{ letterSpacing: "2px" }}>ትምህርት አስገባ</span>
           </Link>
         </li>
 
-        {/* <!-- End Login Page Nav -->
+        {/* Add Content */}
+        <li className="nav-item">
+          <Link className="nav-link collapsed d-flex align-items-center" to="/dashboard/PostContent">
+            <i className="bi bi-file-earmark-text-fill me-2"></i>
+            <span style={{ letterSpacing: "2px" }}>ይዘት አስገባ</span>
+          </Link>
+        </li>
 
-      <!-- End Error 404 Page Nav -->
+        {/* Add Documents */}
+        <li className="nav-item">
+          <Link className="nav-link collapsed d-flex align-items-center" to="/dashboard/AddDocuments">
+            <i className="bi bi-folder-plus me-2"></i>
+            <span style={{ letterSpacing: "2px" }}>ሰነድ አስገባ</span>
+          </Link>
+        </li>
 
-      <!-- End Blank Page Nav --> */}
+        {/* View Users */}
+        <li className="nav-item">
+          <Link className="nav-link collapsed d-flex align-items-center" to="/dashboard/usersReport">
+            <i className="bi bi-people-fill me-2"></i>
+            <span style={{ letterSpacing: "2px" }}>አባላት ተመልከት</span>
+          </Link>
+        </li>
       </ul>
     </aside>
   );
