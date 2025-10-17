@@ -233,6 +233,7 @@ export default function NewsSection() {
           </Button>
         </Modal.Footer>
       </Modal>
+      <div class="et_pb_bottom_inside_divider" ></div>
     </section>
   );
 }

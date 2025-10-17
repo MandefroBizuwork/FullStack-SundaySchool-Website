@@ -139,6 +139,7 @@ function Documents() {
           </div>
         )}
       </div>
+       <div class="et_pb_bottom_inside_divider" ></div>
     </section>
   );
 }

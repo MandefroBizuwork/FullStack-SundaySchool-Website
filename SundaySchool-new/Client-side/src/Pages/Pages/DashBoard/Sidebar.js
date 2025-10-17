@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import "./Header.css";
 
@@ -6,18 +6,18 @@ function Sidebar({ sideBarOpen }) {
   const [isCollapsed, setIscollapsed] = useState(true);
   const [categories, setCategories] = useState([]);
   const [error, setError] = useState("");
+
   const collapseMenu1 = () => {
     setIscollapsed((prev) => !prev);
   };
+
   useEffect(() => {
     const fetchCategories = async () => {
       try {
         const api = "http://localhost:2000/course/categories";
         const response = await fetch(api);
 
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
+        if (!response.ok) throw new Error("Network response was not ok");
 
         const data = await response.json();
         setCategories(data.category || []); // ensure it's an array
@@ -29,17 +29,28 @@ function Sidebar({ sideBarOpen }) {
 
     fetchCategories();
   }, []);
+
+  // Category → Icon map
+  const categoryIcons = {
+    "የመጽሐፍ ቅዱስ ጥናት": "bi-book",
+    "የቤተክርስቲያን ታሪክ": "bi-bank",
+    "የመዝሙር ትምህርት": "bi-music-note-beamed",
+  };
+
   return (
     <aside
       id="sidebar"
-      className={`mysidebar ${sideBarOpen ? "showsidbar" : "hidesidbar"} `}
+      className={`mysidebar ${sideBarOpen ? "showsidbar" : "hidesidbar"}`}
     >
       <hr style={{ backgroundColor: "black", height: "1.5px" }} />
 
       <ul className="sidebar-nav mb-auto" id="sidebar-nav">
         {/* Dashboard */}
         <li className="nav-item">
-          <Link className="nav-link collapsed d-flex align-items-center" to="/dashboard">
+          <Link
+            className="nav-link collapsed d-flex align-items-center"
+            to="/dashboard"
+          >
             <i className="bi bi-house-door-fill me-2"></i>
             <span style={{ letterSpacing: "2px" }}>ዋና ገጽ</span>
           </Link>
@@ -67,43 +78,42 @@ function Sidebar({ sideBarOpen }) {
             data-bs-parent="#sidebar-nav"
             className={`sidbarDropdown-container ${
               isCollapsed ? "" : "form-collapse"
-            }`}>
-                   {
-                      categories.length > 0 ? (
-                      categories.map((cat) => {
-                        // Dynamically choose icon
-                        let iconClass;
-                        if (cat.CATGORYNAME === "የመጽሐፍ ቅዱስ ጥናት") iconClass = "bi-journal-text";
-                        else if (cat.CATGORYNAME === "የቤተክርስቲያን ታሪክ") iconClass = "bi-building";
-                        else iconClass = "bi-book";
+            }`}
+          >
+            {categories.length > 0 ? (
+              categories.map((cat) => {
+                const iconClass =
+                  categoryIcons[cat.CATGORYNAME] || "bi-book-half"; // fallback icon
 
-                        return (
-                          <> 
-                
-                          <li>
-                            <Link  to={`Courses/CouresReport/${cat.CATID}`} className="d-flex align-items-center">
-                              <i className="bi bi-book-half me-2"></i>
-                              <span style={{ letterSpacing: "2px" }}>{cat.CATGORYNAME}</span>
-                            </Link>
-                           </li>
-                            <hr style={{ backgroundColor: "#585757" }} />
-                            </>
-                            
-                        
-                        );
-                      })
-                    ) : (
-                      <h2 className="text-danger text-center">ዳታው አልተገኘም!</h2>
-                    )}
-                              
-          
-          
+                return (
+                  <React.Fragment key={cat.CATID}>
+                    <li>
+                      <Link
+                        to={`Courses/CouresReport/${cat.CATID}`}
+                        className="d-flex align-items-center"
+                      >
+                        <i className={`bi ${iconClass} me-2`}></i>
+                        <span style={{ letterSpacing: "2px" }}>
+                          {cat.CATGORYNAME}
+                        </span>
+                      </Link>
+                    </li>
+                    <hr style={{ backgroundColor: "#585757" }} />
+                  </React.Fragment>
+                );
+              })
+            ) : (
+              <h2 className="text-danger text-center">{error}</h2>
+            )}
           </ul>
         </li>
 
         {/* Add New Course */}
         <li className="nav-item">
-          <Link className="nav-link collapsed d-flex align-items-center" to="/dashboard/PostCourse">
+          <Link
+            className="nav-link collapsed d-flex align-items-center"
+            to="/dashboard/PostCourse"
+          >
             <i className="bi bi-pencil-square me-2"></i>
             <span style={{ letterSpacing: "2px" }}>ትምህርት አስገባ</span>
           </Link>
@@ -111,7 +121,10 @@ function Sidebar({ sideBarOpen }) {
 
         {/* Add Content */}
         <li className="nav-item">
-          <Link className="nav-link collapsed d-flex align-items-center" to="/dashboard/PostContent">
+          <Link
+            className="nav-link collapsed d-flex align-items-center"
+            to="/dashboard/PostContent"
+          >
             <i className="bi bi-file-earmark-text-fill me-2"></i>
             <span style={{ letterSpacing: "2px" }}>ይዘት አስገባ</span>
           </Link>
@@ -119,7 +132,10 @@ function Sidebar({ sideBarOpen }) {
 
         {/* Add Documents */}
         <li className="nav-item">
-          <Link className="nav-link collapsed d-flex align-items-center" to="/dashboard/AddDocuments">
+          <Link
+            className="nav-link collapsed d-flex align-items-center"
+            to="/dashboard/AddDocuments"
+          >
             <i className="bi bi-folder-plus me-2"></i>
             <span style={{ letterSpacing: "2px" }}>ሰነድ አስገባ</span>
           </Link>
@@ -127,7 +143,10 @@ function Sidebar({ sideBarOpen }) {
 
         {/* View Users */}
         <li className="nav-item">
-          <Link className="nav-link collapsed d-flex align-items-center" to="/dashboard/usersReport">
+          <Link
+            className="nav-link collapsed d-flex align-items-center"
+            to="/dashboard/usersReport"
+          >
             <i className="bi bi-people-fill me-2"></i>
             <span style={{ letterSpacing: "2px" }}>አባላት ተመልከት</span>
           </Link>

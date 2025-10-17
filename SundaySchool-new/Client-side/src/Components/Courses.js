@@ -29,7 +29,7 @@ function Courses() {
     <section id="courses" className="courses-section py-5 bg-light ">
       <div className="container">
         {/* Section Header */}
-        <div className="text-center mb-5">
+        <div className="text-center mb-5 shadow py-3">
           <h2 className="fw-bold text-primary mb-2">ትምህርቶች</h2>
           <p className="text-muted mx-auto" style={{ maxWidth: "700px" }}>
             በሰንበት ትምህርት ቤታችን ተማሪዎች ከመጽሐፍ ቅዱስ፣ ከቤተክርስቲያን ታሪክ፣
@@ -80,6 +80,7 @@ function Courses() {
           )}
         </div>
       </div>
+       <div class="et_pb_bottom_inside_divider" ></div>
     </section>
   );
 }
